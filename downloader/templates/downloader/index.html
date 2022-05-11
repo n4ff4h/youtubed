@@ -1,0 +1,27 @@
+{% extends 'base.html' %} {% load static %}
+
+<!-- Content -->
+{% block content %}
+<div class="hero h-screen bg-base-200">
+  <div class="hero-content text-center">
+    <form action="" method="post" class="max-w-md w-96">
+      <img
+        src="{% static 'images/icons8-youtube-logo.svg' %}"
+        alt=""
+        class="mx-auto"
+      />
+      {% csrf_token %}
+      <div class="form-control py-6">
+        <input
+          id="link"
+          type="text"
+          name="link"
+          placeholder="YouTube Video URL"
+          class="input input-bordered input-primary"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary w-full">Download</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
