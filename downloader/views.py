@@ -19,7 +19,12 @@ class IndexView(View):
             url = request.POST.get('url')
             file_path = os.path.join(settings.BASE_DIR, 'videos')
 
+            # Create videos directory if not present
+            if not os.path.exists(file_path):
+                os.makedirs(file_path)
+
             try:
+                # Download and serve file to the client side
                 return FileResponse(open(YouTube(url).streams.first().download(skip_existing=True, output_path=file_path),'rb'))
             finally:
                 for file in os.scandir(file_path):
