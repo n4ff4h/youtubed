@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.views import View
 from pytube import YouTube
+from django.http import FileResponse
+from django.conf import settings
+
+import os
 
 # Create your views here.
 class IndexView(View):
@@ -10,14 +14,15 @@ class IndexView(View):
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
-        # Get link from the html form using the name of the input element
-        link = request.POST.get('link')
-        video = YouTube(link)
+        try:
+            # Get link from the html form using the name of the input element
+            url = request.POST.get('url')
+            file_path = os.path.join(settings.BASE_DIR, 'videos')
 
-        # Set video resolution
-        stream = video.streams.get_lowest_resolution()
-
-        # Download the video
-        stream.download()
-
-        return render(request, self.template_name)
+            try:
+                return FileResponse(open(YouTube(url).streams.first().download(skip_existing=True, output_path=file_path),'rb'))
+            finally:
+                for file in os.scandir(file_path):
+                    os.remove(file.path)
+        except:
+            return render(request, self.template_name)
